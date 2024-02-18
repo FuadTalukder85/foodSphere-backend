@@ -105,6 +105,28 @@ async function run() {
       res.send(result);
     });
 
+    //update an supply item
+    app.put("/all-supplies/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateSupply = req.body;
+      const supplyData = {
+        $set: {
+          image: updateSupply.image,
+          category: updateSupply.category,
+          title: updateSupply.title,
+          quantity: updateSupply.quantity,
+          description: updateSupply.description,
+        },
+      };
+      const result = await supplyCollection.updateOne(
+        filter,
+        supplyData,
+        options
+      );
+      res.send(result);
+    });
     // ==============================================================
 
     // Start the server
