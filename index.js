@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 // MongoDB Connection URL
 const uri = process.env.MONGODB_URI;
@@ -92,13 +92,21 @@ async function run() {
     });
 
     //get all supply item
-    app.get("/all-supplies", async (req, res) => {
+    app.get("/supplies", async (req, res) => {
       const result = await supplyCollection.find().toArray();
       res.send(result);
     });
 
+    //get single supply item by id
+    app.get("/supplies/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await supplyCollection.findOne(query);
+      res.send(result);
+    });
+
     //delete an supply item
-    app.delete("/all-supplies/:id", async (req, res) => {
+    app.delete("/supplies/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await supplyCollection.deleteOne(query);
@@ -106,7 +114,7 @@ async function run() {
     });
 
     //update an supply item
-    app.put("/all-supplies/:id", async (req, res) => {
+    app.put("/supplies/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
@@ -127,6 +135,34 @@ async function run() {
       );
       res.send(result);
     });
+
+    // get
+    app.get("/all-stats", async (req, res) => {
+      const totalUsers = await collection.estimatedDocumentCount();
+      const totalSupply = await supplyCollection.estimatedDocumentCount();
+      const categories = await supplyCollection.distinct("category");
+      const totalCategories = categories.length;
+      res.send({
+        totalUsers,
+        totalSupply,
+        categories,
+        totalCategories,
+      });
+    });
+    ////////////////////////
+    app.get("/total-categories", async (req, res) => {
+      try {
+        // Find distinct categories
+        const categories = await supplyCollection.distinct("category");
+        const totalCategories = categories.length;
+
+        res.json({ totalCategories });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
     // ==============================================================
 
     // Start the server
