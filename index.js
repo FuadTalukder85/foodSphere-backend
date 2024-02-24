@@ -152,7 +152,6 @@ async function run() {
     ////////////////////////
     app.get("/total-categories", async (req, res) => {
       try {
-        // Find distinct categories
         const categories = await supplyCollection.distinct("category");
         const totalCategories = categories.length;
 
@@ -160,6 +159,20 @@ async function run() {
       } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
+    ///////////////
+    app.get("/categoryCounts", async (req, res) => {
+      try {
+        const categoryCounts = await supplyCollection
+          .aggregate([{ $group: { _id: "$category", count: { $sum: 1 } } }])
+          .toArray();
+
+        res.json(categoryCounts);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal Server Error" });
       }
     });
 
