@@ -10,7 +10,8 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cookieParser());
+app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
 
 // MongoDB Connection URL
 const uri = process.env.MONGODB_URI;
