@@ -12,7 +12,7 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://willowy-sunflower-a54a29.netlify.app",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
