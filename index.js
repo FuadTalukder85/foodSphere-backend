@@ -33,6 +33,8 @@ async function run() {
     const db = client.db("FoodSphere");
     const collection = db.collection("users");
     const supplyCollection = db.collection("supplyCollection");
+    const volunteerCollection = db.collection("volunteer");
+    const donorTestimonialsCollection = db.collection("testimonials");
 
     // User Registration
     app.post("/api/v1/register", async (req, res) => {
@@ -138,6 +140,28 @@ async function run() {
         supplyData,
         options
       );
+      res.send(result);
+    });
+
+    // volunteer
+    app.post("/volunteer", async (req, res) => {
+      const addVolunteer = req.body;
+      const result = await volunteerCollection.insertOne(addVolunteer);
+      res.send(result);
+    });
+
+    // testimonials
+    app.post("/create-testimonial", async (req, res) => {
+      const addTestimonials = req.body;
+      const result = await donorTestimonialsCollection.insertOne(
+        addTestimonials
+      );
+      res.send(result);
+    });
+
+    // get testimonials
+    app.get("/testimonials", async (req, res) => {
+      const result = await donorTestimonialsCollection.find().toArray();
       res.send(result);
     });
 
