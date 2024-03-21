@@ -34,6 +34,7 @@ async function run() {
     const collection = db.collection("users");
     const supplyCollection = db.collection("supplyCollection");
     const volunteerCollection = db.collection("volunteer");
+    const commentCollection = db.collection("comment");
     const donorTestimonialsCollection = db.collection("testimonials");
 
     // User Registration
@@ -147,6 +148,19 @@ async function run() {
     app.post("/volunteer", async (req, res) => {
       const addVolunteer = req.body;
       const result = await volunteerCollection.insertOne(addVolunteer);
+      res.send(result);
+    });
+
+    // comment
+    app.post("/comment", async (req, res) => {
+      const addComment = req.body;
+      const result = await commentCollection.insertOne(addComment);
+      res.send(result);
+    });
+
+    // get comment
+    app.get("/comment", async (req, res) => {
+      const result = await commentCollection.find().toArray();
       res.send(result);
     });
 
