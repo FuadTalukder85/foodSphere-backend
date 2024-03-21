@@ -154,6 +154,7 @@ async function run() {
     // comment
     app.post("/comment", async (req, res) => {
       const addComment = req.body;
+      addComment.Date = new Date();
       const result = await commentCollection.insertOne(addComment);
       res.send(result);
     });
