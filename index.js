@@ -90,6 +90,14 @@ async function run() {
       });
     });
 
+    //get all users
+    // app.get("/users", async (req, res) => {
+    //   const result = await collection.find().toArray();
+    //   res.send(result);
+    // });
+
+    //get single user
+
     // ==============================================================
     // WRITE YOUR CODE HERE
     //post supply item
