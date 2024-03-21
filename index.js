@@ -144,14 +144,20 @@ async function run() {
       res.send(result);
     });
 
-    // volunteer
+    // post volunteer
     app.post("/volunteer", async (req, res) => {
       const addVolunteer = req.body;
       const result = await volunteerCollection.insertOne(addVolunteer);
       res.send(result);
     });
 
-    // comment
+    // get volunteer
+    app.get("/volunteer", async (req, res) => {
+      const result = await volunteerCollection.find().toArray();
+      res.send(result);
+    });
+
+    // post comment
     app.post("/comment", async (req, res) => {
       const addComment = req.body;
       addComment.Date = new Date();
