@@ -91,10 +91,10 @@ async function run() {
     });
 
     //get all users
-    // app.get("/users", async (req, res) => {
-    //   const result = await collection.find().toArray();
-    //   res.send(result);
-    // });
+    app.get("/users", async (req, res) => {
+      const result = await collection.find().toArray();
+      res.send(result);
+    });
 
     //get single user
 
@@ -231,6 +231,37 @@ async function run() {
       } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal Server Error" });
+      }
+    });
+
+    ////////////
+    app.get("/total-quantity-by-user", async (req, res) => {
+      try {
+        const totalQuantityByUser = await db
+          .collection("supplyCollection")
+          .aggregate([
+            {
+              $group: {
+                _id: "$user",
+                totalQuantity: { $sum: { $toInt: "$quantity" } },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                username: "$_id",
+                totalQuantity: 1,
+              },
+            },
+          ])
+          .toArray();
+
+        res.json(totalQuantityByUser);
+      } catch (err) {
+        console.error("Error fetching total quantity by user:", err);
+        res
+          .status(500)
+          .json({ error: "Failed to fetch total quantity by user" });
       }
     });
 
