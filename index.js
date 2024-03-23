@@ -96,8 +96,6 @@ async function run() {
       res.send(result);
     });
 
-    //get single user
-
     // ==============================================================
     // WRITE YOUR CODE HERE
     //post supply item
@@ -242,14 +240,14 @@ async function run() {
           .aggregate([
             {
               $group: {
-                _id: "$user",
+                _id: "$user.email",
                 totalQuantity: { $sum: { $toInt: "$quantity" } },
               },
             },
             {
               $project: {
                 _id: 0,
-                username: "$_id",
+                email: "$_id",
                 totalQuantity: 1,
               },
             },
