@@ -233,7 +233,6 @@ async function run() {
     });
 
     ////////////
-
     app.get("/total-quantity-by-user", async (req, res) => {
       try {
         const totalQuantityByUser = await db
@@ -243,30 +242,16 @@ async function run() {
               $group: {
                 _id: "$user.email",
                 totalQuantity: { $sum: { $toInt: "$quantity" } },
-                username: { $first: "$username" },
               },
             },
             {
               $project: {
                 _id: 0,
                 email: "$_id",
-                username: 1,
                 totalQuantity: 1,
-              },
-            },
-            {
-              $group: {
-                _id: "$username",
-                email: { $addToSet: "$email" },
-                totalQuantity: { $sum: "$totalQuantity" },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-                username: "$_id",
-                email: 1,
-                totalQuantity: 1,
+                username: {
+                  $arrayElemAt: [{ $split: ["$_id", "@"] }, 0],
+                },
               },
             },
           ])
@@ -280,6 +265,8 @@ async function run() {
           .json({ error: "Failed to fetch total quantity by user" });
       }
     });
+
+    //
     // ==============================================================
 
     // Start the server
