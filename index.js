@@ -242,6 +242,7 @@ async function run() {
               $group: {
                 _id: "$user.email",
                 totalQuantity: { $sum: { $toInt: "$quantity" } },
+                username: { $first: "$username" },
               },
             },
             {
@@ -249,9 +250,7 @@ async function run() {
                 _id: 0,
                 email: "$_id",
                 totalQuantity: 1,
-                username: {
-                  $arrayElemAt: [{ $split: ["$_id", "@"] }, 0],
-                },
+                username: 1,
               },
             },
           ])
@@ -265,7 +264,6 @@ async function run() {
           .json({ error: "Failed to fetch total quantity by user" });
       }
     });
-
     //
     // ==============================================================
 
